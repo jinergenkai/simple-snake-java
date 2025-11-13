@@ -90,7 +90,7 @@ public class MainUI extends JPanel {
     private void drawSnake(Graphics g) {
         Point[] bodyList = board.getSnake().getBody();
         // Vẽ thân (bỏ đầu)
-        if (imgBody != null) {
+        if (imgBody != null && bodyList != null) {
             for (int i = 1; i < board.getSnake().getLength(); i++) {
                 Point p = bodyList[i];
                 g.drawImage(imgBody, p.x * CELL_SIZE, p.y * CELL_SIZE, CELL_SIZE, CELL_SIZE, null);
@@ -110,7 +110,7 @@ public class MainUI extends JPanel {
     }
 
     private void drawFood(Graphics g) {
-        if (imgFood != null) {
+        if (imgFood != null && board.getFood() != null) {
             g.drawImage(imgFood, board.getFood().x * CELL_SIZE - (int)(0.25 * CELL_SIZE), board.getFood().y * CELL_SIZE  - (int)(0.25 * CELL_SIZE), (int)(CELL_SIZE * 1.5), (int)(CELL_SIZE * 1.5), null);
         }
     }
