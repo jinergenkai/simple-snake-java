@@ -44,16 +44,16 @@ public class MainUI extends JPanel {
             public void keyPressed(java.awt.event.KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case java.awt.event.KeyEvent.VK_UP:
-                        initBoard.getSnake().changeDirection("UP");
+                        initBoard.getSnake().changeDirection(Direction.UP);
                         break;
                     case java.awt.event.KeyEvent.VK_DOWN:
-                        initBoard.getSnake().changeDirection("DOWN");
+                        initBoard.getSnake().changeDirection(Direction.DOWN);
                         break;
                     case java.awt.event.KeyEvent.VK_LEFT:
-                        initBoard.getSnake().changeDirection("LEFT");
+                        initBoard.getSnake().changeDirection(Direction.LEFT);
                         break;
                     case java.awt.event.KeyEvent.VK_RIGHT:
-                        initBoard.getSnake().changeDirection("RIGHT");
+                        initBoard.getSnake().changeDirection(Direction.RIGHT);
                         break;
                     case java.awt.event.KeyEvent.VK_ENTER:
                         if (initBoard.isGameOver() && onRestart != null) {
@@ -84,7 +84,7 @@ public class MainUI extends JPanel {
         g.setFont(new Font("Arial", Font.BOLD, 16));
         String status = board.isGameOver() ? "Game Over" : "Playing";
         int tick = tickSupplier != null ? tickSupplier.getAsInt() : 0;
-        g.drawString("Status: " + status + "  -  Score: " + board.getScore() + "  -  Tick: " + tick, 10, 20);
+        g.drawString("Status: " + status + "  -  Score: " + board.getTotalScore() + "  -  Tick: " + tick, 10, 20);
     }
 
     private void drawSnake(Graphics g) {
@@ -99,11 +99,11 @@ public class MainUI extends JPanel {
         // Vẽ đầu
         Point head = board.getSnake().getHead();
         BufferedImage headImg = imgHeadRight;
-        String dir = board.getSnake().getDirection();
-        if (dir.equals("UP")) headImg = imgHeadUp;
-        else if (dir.equals("DOWN")) headImg = imgHeadDown;
-        else if (dir.equals("LEFT")) headImg = imgHeadLeft;
-        else if (dir.equals("RIGHT")) headImg = imgHeadRight;
+        Direction dir = board.getSnake().getDirection();
+        if (dir == Direction.UP) headImg = imgHeadUp;
+        else if (dir == Direction.DOWN) headImg = imgHeadDown;
+        else if (dir == Direction.LEFT) headImg = imgHeadLeft;
+        else if (dir == Direction.RIGHT) headImg = imgHeadRight;
         if (headImg != null) {
             g.drawImage(headImg, head.x * CELL_SIZE, head.y * CELL_SIZE, CELL_SIZE, CELL_SIZE, null);
         }

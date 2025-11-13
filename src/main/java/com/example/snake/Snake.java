@@ -1,11 +1,10 @@
 package com.example.snake;
 
-
 public class Snake {
     private int MAX_LENGTH = 100;
     private Point[] body;
     private int length;
-    private String direction;
+    private Direction direction;
 
     public Snake(int startX, int startY) {
         body = new Point[MAX_LENGTH];
@@ -13,32 +12,16 @@ public class Snake {
         body[1] = new Point(startX - 1, startY);
         body[2] = new Point(startX - 2, startY);
         length = 3;
-        direction = "RIGHT";
+        direction = Direction.RIGHT;
     }
 
-    public Point getHead() {
-        return body[0];
-    }
-
-    public Point[] getBody() {
-        return body;
-    }
-
-    public int getLength() {
-        return length;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-  
     public void move() {
         Point head = getHead();
         Point newHead = switch (direction) {
-            case "UP" -> new Point(head.x, head.y - 1);
-            case "DOWN" -> new Point(head.x, head.y + 1);
-            case "LEFT" -> new Point(head.x - 1, head.y);
-            case "RIGHT" -> new Point(head.x + 1, head.y);
+            case UP -> new Point(head.x, head.y - 1);
+            case DOWN -> new Point(head.x, head.y + 1);
+            case LEFT -> new Point(head.x - 1, head.y);
+            case RIGHT -> new Point(head.x + 1, head.y);
             default -> new Point(head.x, head.y);
         };
         for (int i = length; i > 0; i--) {
@@ -53,7 +36,7 @@ public class Snake {
         length++;
     }
 
-    public void changeDirection(String newDirection) {
+    public void changeDirection(Direction newDirection) {
         direction = newDirection;
     }
 
@@ -74,5 +57,21 @@ public class Snake {
             }
         }
         return false;
+    }
+
+    public Point getHead() {
+        return body[0];
+    }
+
+    public Point[] getBody() {
+        return body;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 }

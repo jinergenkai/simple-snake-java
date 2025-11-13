@@ -7,7 +7,8 @@ public class Board {
 
     private Snake snake;
     private Food food;
-    private int score;
+
+    private int totalScore;
     private boolean gameOver;
     private int speed;
 
@@ -15,7 +16,7 @@ public class Board {
         this.width = width;
         this.height = height;
         this.snake = new Snake(width / 2, height / 2);
-        this.score = 0;
+        this.totalScore = 0;
         this.gameOver = false;
         this.speed = 150;
         spawnFood();
@@ -35,9 +36,9 @@ public class Board {
 
         if (snake.getHead().equals(food)) {
             snake.grow();
-            score += food.getScore();
+            totalScore += food.getScore();
             spawnFood();
-            speed = Math.max(50, speed - 5);
+            speed = Math.max(50, speed - 20);
         }
 
         Point head = snake.getHead();
@@ -66,8 +67,8 @@ public class Board {
         return food;
     }
 
-    public int getScore() {
-        return score;
+    public int getTotalScore() {
+        return totalScore;
     }
 
     public boolean isGameOver() {
