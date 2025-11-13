@@ -11,21 +11,23 @@ public class App {
                 Board board;
                 MainUI panel;
                 Timer timer;
+                int tick = 0;
 
                 void start() {
                     board = new Board(30, 20);
-                    panel = new MainUI(board, this::restart);
+                    panel = new MainUI(board, this::restart, () -> tick);
                     frame.setContentPane(panel);
                     frame.pack();
                     frame.setResizable(false);
                     frame.setLocationRelativeTo(null);
                     frame.setVisible(true);
                     panel.requestFocusInWindow();
-                    timer = new Timer(board.speed, e -> {
-                        if (!board.gameOver) {
+                    timer = new Timer(board.getSpeed(), e -> {
+                        tick++;
+                        if (!board.isGameOver()) {
                             board.update();
                             panel.repaint();
-                            timer.setDelay(board.speed);
+                            timer.setDelay(board.getSpeed());
                         }
                     });
                     timer.start();
@@ -33,6 +35,7 @@ public class App {
 
                 void restart() {
                     if (timer != null) timer.stop();
+                    tick = 0;
                     start();
                 }
             }

@@ -14,12 +14,13 @@ public class MainUI extends JPanel {
     // Biến ảnh
     private BufferedImage imgFood, imgBody, imgHeadUp, imgHeadDown, imgHeadLeft, imgHeadRight;
 
-    private Runnable onRestart;
+    // Hàm cung cấp tick
+    private final java.util.function.IntSupplier tickSupplier;
 
-    public MainUI(Board initBoard, Runnable onRestart) {
+    public MainUI(Board initBoard, Runnable onRestart, java.util.function.IntSupplier tickSupplier) {
         this.board = initBoard;
-        this.onRestart = onRestart;
-        setPreferredSize(new Dimension(initBoard.width * CELL_SIZE, initBoard.height * CELL_SIZE));
+        this.tickSupplier = tickSupplier;
+        setPreferredSize(new Dimension(initBoard.getWidth() * CELL_SIZE, initBoard.getHeight() * CELL_SIZE));
         setBackground(Color.WHITE);
 
         // Load ảnh
@@ -43,25 +44,29 @@ public class MainUI extends JPanel {
             public void keyPressed(java.awt.event.KeyEvent e) {
                 switch (e.getKeyCode()) {
                     case java.awt.event.KeyEvent.VK_UP:
-                        initBoard.snake.changeDirection("UP");
+                        initBoard.getSnake().changeDirection("UP");
                         break;
                     case java.awt.event.KeyEvent.VK_DOWN:
-                        initBoard.snake.changeDirection("DOWN");
+                        initBoard.getSnake().changeDirection("DOWN");
                         break;
                     case java.awt.event.KeyEvent.VK_LEFT:
-                        initBoard.snake.changeDirection("LEFT");
+                        initBoard.getSnake().changeDirection("LEFT");
                         break;
                     case java.awt.event.KeyEvent.VK_RIGHT:
-                        initBoard.snake.changeDirection("RIGHT");
+                        initBoard.getSnake().changeDirection("RIGHT");
                         break;
                     case java.awt.event.KeyEvent.VK_ENTER:
-                        if (initBoard.gameOver && onRestart != null) {
+                        if (initBoard.isGameOver() && onRestart != null) {
                             onRestart.run();
                         }
                         break;
                 }
             }
         });
+    }
+
+    public MainUI(Board initBoard, Runnable onRestart) {
+        this(initBoard, onRestart, () -> 0);
     }
 
     @Override
@@ -77,23 +82,24 @@ public class MainUI extends JPanel {
     private void drawStatus(Graphics g) {
         g.setColor(Color.BLACK);
         g.setFont(new Font("Arial", Font.BOLD, 16));
-        String status = board.gameOver ? "Game Over" : "Playing";
-        g.drawString("Status: " + status + "  -  Score: " + board.score, 10, 20);
+        String status = board.isGameOver() ? "Game Over" : "Playing";
+        int tick = tickSupplier != null ? tickSupplier.getAsInt() : 0;
+        g.drawString("Status: " + status + "  -  Score: " + board.getScore() + "  -  Tick: " + tick, 10, 20);
     }
 
     private void drawSnake(Graphics g) {
-        java.util.List<Point> bodyList = board.snake.body;
+        Point[] bodyList = board.getSnake().getBody();
         // Vẽ thân (bỏ đầu)
         if (imgBody != null) {
-            for (int i = 1; i < bodyList.size(); i++) {
-                Point p = bodyList.get(i);
+            for (int i = 1; i < board.getSnake().getLength(); i++) {
+                Point p = bodyList[i];
                 g.drawImage(imgBody, p.x * CELL_SIZE, p.y * CELL_SIZE, CELL_SIZE, CELL_SIZE, null);
             }
         }
         // Vẽ đầu
-        Point head = board.snake.getHead();
+        Point head = board.getSnake().getHead();
         BufferedImage headImg = imgHeadRight;
-        String dir = board.snake.direction;
+        String dir = board.getSnake().getDirection();
         if (dir.equals("UP")) headImg = imgHeadUp;
         else if (dir.equals("DOWN")) headImg = imgHeadDown;
         else if (dir.equals("LEFT")) headImg = imgHeadLeft;
@@ -105,7 +111,7 @@ public class MainUI extends JPanel {
 
     private void drawFood(Graphics g) {
         if (imgFood != null) {
-            g.drawImage(imgFood, board.food.x * CELL_SIZE - (int)(0.25 * CELL_SIZE), board.food.y * CELL_SIZE  - (int)(0.25 * CELL_SIZE), (int)(CELL_SIZE * 1.5), (int)(CELL_SIZE * 1.5), null);
+            g.drawImage(imgFood, board.getFood().x * CELL_SIZE - (int)(0.25 * CELL_SIZE), board.getFood().y * CELL_SIZE  - (int)(0.25 * CELL_SIZE), (int)(CELL_SIZE * 1.5), (int)(CELL_SIZE * 1.5), null);
         }
     }
 
@@ -113,8 +119,8 @@ public class MainUI extends JPanel {
     private void drawCheckerBoard(Graphics g) {
         Color color1 = new Color(0xa6d03c); // xanh nhạt
         Color color2 = new Color(0xabd543); // xanh đậm
-        for (int y = 0; y < board.height; y++) {
-            for (int x = 0; x < board.width; x++) {
+        for (int y = 0; y < board.getHeight(); y++) {
+            for (int x = 0; x < board.getWidth(); x++) {
                 if ((x + y) % 2 == 0) g.setColor(color1);
                 else g.setColor(color2);
                 g.fillRect(x * CELL_SIZE, y * CELL_SIZE, CELL_SIZE, CELL_SIZE);
@@ -124,6 +130,6 @@ public class MainUI extends JPanel {
 
     private void drawBorder(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawRect(0, 0, board.width * CELL_SIZE - 1, board.height * CELL_SIZE - 1);
+        g.drawRect(0, 0, board.getWidth() * CELL_SIZE - 1, board.getHeight() * CELL_SIZE - 1);
     }
 }

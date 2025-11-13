@@ -2,13 +2,14 @@ package com.example.snake;
 import java.util.Random;
 
 public class Board {
-    int width;
-    int height;
-    Snake snake;
-    Point food;
-    int score;
-    boolean gameOver;
-    int speed;
+    private int width;
+    private int height;
+
+    private Snake snake;
+    private Food food;
+    private int score;
+    private boolean gameOver;
+    private int speed;
 
     public Board(int width, int height) {
         this.width = width;
@@ -23,7 +24,7 @@ public class Board {
     public void spawnFood() {
         Random rand = new Random();
         do {
-            food = new Point(rand.nextInt(width), rand.nextInt(height));
+            food = new Food(rand.nextInt(width), rand.nextInt(height), 10);
         } while (snake.containsPoint(food));
     }
 
@@ -34,9 +35,8 @@ public class Board {
 
         if (snake.getHead().equals(food)) {
             snake.grow();
-            score += 10;
+            score += food.getScore();
             spawnFood();
-
             speed = Math.max(50, speed - 5);
         }
 
@@ -48,5 +48,33 @@ public class Board {
         if (snake.checkSelfCollision()) {
             gameOver = true;
         }
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public Snake getSnake() {
+        return snake;
+    }
+
+    public Point getFood() {
+        return food;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public int getSpeed() {
+        return speed;
     }
 }

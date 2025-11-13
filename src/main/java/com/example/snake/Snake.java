@@ -1,22 +1,35 @@
 package com.example.snake;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class Snake {
-    List<Point> body;
-    String direction;
+    private int MAX_LENGTH = 100;
+    private Point[] body;
+    private int length;
+    private String direction;
 
     public Snake(int startX, int startY) {
-        body = new ArrayList<>();
-        body.add(new Point(startX, startY));
-        body.add(new Point(startX - 1, startY));
-        body.add(new Point(startX - 2, startY));
+        body = new Point[MAX_LENGTH];
+        body[0] = new Point(startX, startY);
+        body[1] = new Point(startX - 1, startY);
+        body[2] = new Point(startX - 2, startY);
+        length = 3;
         direction = "RIGHT";
     }
 
     public Point getHead() {
-        return body.get(0);
+        return body[0];
+    }
+
+    public Point[] getBody() {
+        return body;
+    }
+
+    public int getLength() {
+        return length;
+    }
+
+    public String getDirection() {
+        return direction;
     }
   
     public void move() {
@@ -28,27 +41,26 @@ public class Snake {
             case "RIGHT" -> new Point(head.x + 1, head.y);
             default -> new Point(head.x, head.y);
         };
-        body.add(0, newHead);
-        body.remove(body.size() - 1);
+        for (int i = length; i > 0; i--) {
+            body[i] = body[i - 1];
+        }
+        body[0] = newHead;
     }
 
     public void grow() {
-        Point tail = body.get(body.size() - 1);
-        body.add(new Point(tail.x, tail.y));
+        Point tail = body[length - 1];
+        body[length] = new Point(tail.x, tail.y);
+        length++;
     }
 
     public void changeDirection(String newDirection) {
-        if (direction.equals("UP") && newDirection.equals("DOWN")) return;
-        if (direction.equals("DOWN") && newDirection.equals("UP")) return;
-        if (direction.equals("LEFT") && newDirection.equals("RIGHT")) return;
-        if (direction.equals("RIGHT") && newDirection.equals("LEFT")) return;
         direction = newDirection;
     }
 
     public boolean checkSelfCollision() {
         Point head = getHead();
-        for (int i = 1; i < body.size(); i++) {
-            if (head.equals(body.get(i))) {
+        for (int i = 1; i < length; i++) {
+            if (head.equals(body[i])) {
                 return true;
             }
         }
@@ -56,8 +68,8 @@ public class Snake {
     }
 
     public boolean containsPoint(Point p) {
-        for (Point point : body) {
-            if (point.equals(p)) {
+        for (int i = 0; i < length; i++) {
+            if (body[i].equals(p)) {
                 return true;
             }
         }

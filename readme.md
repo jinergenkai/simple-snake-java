@@ -1,12 +1,19 @@
-
 # Setting up the Jupyter Kernel for Java in VSCode
-install notebook 
-python install.py --sys-prefix
+python -m venv venv
+.\venv\Scripts\activate
+pip install jupyter  
+
+download/extract ijava-1.3.0.zip from https://github.com/SpencerPark/IJava/releases/tag/v1.3.0
+in lib/ijava-1.3.0 folder run:
+python install.py
 python -m jupyter kernelspec list
 reload vscode
+select java kernel in snake.ipynb
 
-cd demo
-javac -d out src/*.java ; java -cp out Main 
-javac -d out -cp "lib/jline-3.21.0.jar" src/*.java ; java -cp "out;lib/jline-3.21.0.jar" Main
+# setup Java Project with Maven
+setup java environment: link 
+install maven from https://maven.apache.org/download.cgi
+add maven/bin to PATH environment variable
 
+#run the following commands in terminal to run the project:
 mvn clean compile exec:java -D"exec.mainClass="com.example.snake.App""
